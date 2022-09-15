@@ -2,6 +2,7 @@ import sys
 import os
 import time
 import glob
+import requests
 
 
 def _write_cookie(log, cookies):
@@ -33,7 +34,7 @@ def mechanize_cookie(config, log):
     browser.set_cookiejar(cookies)
     browser.addheaders = [
         ('User-agent',
-         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36')
+         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Chrome/7.0.517.41 Safari/534.7')
     ]
     browser.set_handle_refresh(False)
     log.info("Everything set - Let's go")
@@ -191,6 +192,18 @@ def selenium_cookie(config, log):
 
         if 'https://accounts.google.com/' in driver.current_url:
             log.info('Failed to login into Google')
+            if config.cookie_wh:
+                data = {
+                    "username": "IntelWatcher Warning",
+                    "avatar_url": ("https://raw.githubusercontent.com/cr0ybot/ingress-logos/master/ingress_logo/ingress.png"),
+                    "content": f"Google login failed",
+                    "embeds": [{
+                        "description": f":warning: The google login failed!/nCheck screenshot in debug folder of intelwatcher./n/nNo new cookie is build and Intelwatcher wont scrape Ingress no longer!",
+                        "color": 16073282
+                    }]
+                }
+                result = requests.post(config.wh_url, json=data)
+                log.info(f"Webhook response: {result.status_code}")
             _save_screenshot_on_failure('google_login_security.png')
 
         log.info('Login to Intel Ingress')
@@ -211,7 +224,6 @@ def selenium_cookie(config, log):
         driver.get('http://intel.ingress.com')
         driver.find_element("xpath", '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
         driver.implicitly_wait(10)
-        driver.find_element("xpath", '//*[@data-cookiebanner="accept_button"]').click()
 
         log.info('Enter username...')
         try:
