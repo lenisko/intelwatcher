@@ -8,4 +8,4 @@ WORKDIR /usr/src/app
 COPY . .
 RUN python3 -m pip install --no-cache-dir -r requirements.txt \
 && apt-get update \
-&& apt-get install -y chromium=105.0.5195.102-1~deb11u1
+&& apt-get install -y chromium=105.0.5195.125-1~deb11u1
