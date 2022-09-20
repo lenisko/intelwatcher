@@ -203,7 +203,7 @@ def selenium_cookie(config, log):
                     "avatar_url": ("https://raw.githubusercontent.com/cr0ybot/ingress-logos/master/ingress_logo/ingress.png"),
                     "content": f"Google login failed",
                     "embeds": [{
-                        "description": f":warning: The google login failed!/nCheck screenshot in debug folder of intelwatcher./n/nNo new cookie is build and Intelwatcher wont scrape Ingress no longer!",
+                        "description": f":warning: The google login failed! Check screenshot in debug folder of intelwatcher. No new cookie is build and Intelwatcher wont scrape Ingress no longer!",
                         "color": 16073282
                     }]
                 }
