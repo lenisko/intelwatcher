@@ -34,7 +34,7 @@ def mechanize_cookie(config, log):
     browser.set_cookiejar(cookies)
     browser.addheaders = [
         ('User-agent',
-         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.102 Safari/537.36')
+         'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.5195.125 Safari/537.36')
     ]
     browser.set_handle_refresh(False)
     log.info("Everything set - Let's go")
@@ -110,7 +110,7 @@ def selenium_cookie(config, log):
         os.remove(f)
 
     user_agent = ('Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko)'
-                  ' Chrome/105.0.5195.102 Safari/537.36')
+                  ' Chrome/105.0.5195.125 Safari/537.36')
 
     if config.webdriver == 'firefox':
         options = webdriver.FirefoxOptions()
@@ -149,6 +149,11 @@ def selenium_cookie(config, log):
         log.info('Login to Google via Stackoverflow')
         driver.get('https://stackoverflow.com/users/login?ssrc=head')
 
+        try:
+            driver.find_element("xpath", '//*[@class="flex--item s-btn s-btn__primary js-accept-cookies js-consent-banner-hide"]').click()
+            driver.implicitly_wait(10)
+        except NoSuchElementException:
+            pass
         try:
             driver.find_element(By.CSS_SELECTOR, f'.s-btn__{config.ingress_login_type}').click()
             driver.implicitly_wait(10)
