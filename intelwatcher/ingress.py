@@ -100,13 +100,13 @@ class IntelMap:
             s = requests.Session()
             if self.config.proxy_host:
                 if self.config.proxy_username and self.config.proxy_password:
-                    proxy_url = f"{self.config.proxy_type}://{self.config.proxy_username}:{self.config.proxy_password}@{self.config.proxy_host}:{self.config.proxy_port}",
+                    proxy_url = f"{self.config.proxy_type}://{self.config.proxy_username}:{self.config.proxy_password}@{self.config.proxy_host}:{self.config.proxy_port}"
                     s.proxies = {
                         "http": proxy_url,
                         "https": proxy_url,
                     }
                 else:
-                    proxy_url = f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}",
+                    proxy_url = f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}"
                     s.proxies = {
                         "http": proxy_url,
                         "https": proxy_url,
