@@ -101,16 +101,12 @@ class IntelMap:
             if self.config.proxy_host:
                 if self.config.proxy_username and self.config.proxy_password:
                     proxy_url = f"{self.config.proxy_type}://{self.config.proxy_username}:{self.config.proxy_password}@{self.config.proxy_host}:{self.config.proxy_port}"
-                    s.proxies = {
-                        "http": proxy_url,
-                        "https": proxy_url,
-                    }
                 else:
                     proxy_url = f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}"
-                    s.proxies = {
-                        "http": proxy_url,
-                        "https": proxy_url,
-                    }
+                s.proxies = {
+                    "http": proxy_url,
+                    "https": proxy_url,
+                }
 
             s.headers = self.headers
             s.cookies = cookiejar_from_dict(self.cookie_dict)
