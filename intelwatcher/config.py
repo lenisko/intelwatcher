@@ -12,7 +12,7 @@ class Config:
         self.wh_url = config_file.get("Config", "webhook_url")
         self.workers = config_file.getint("Config", "workers", fallback=1)
         self.maxtiles = config_file.getint("Config", "max_tiles", fallback=450)
-        self.areasleep = config_file.getint("Config", "sleep_between_areas", fallback=3)
+        self.areasleep = config_file.getfloat("Config", "sleep_between_areas", fallback=3.0)
 
         self.scan_type = config_file.get("DB", "scanner").lower()
         self.db_name_scan = config_file.get("DB", "scanner_db_name")
