@@ -45,7 +45,7 @@ class Config:
 
         self.koji_project = config_file.get("koji", "project", fallback="")
         self.koji_bearer = config_file.get("koji", "bearer", fallback="")
-        self.koji_include = config_file.get("koji", "include", fallback="")
+        self.koji_include = config_file.get("koji", "include_types", fallback=[])
 
         with open("cookie.txt", encoding="utf-8", mode="r+") as cookie:
             self.cookie = cookie.read()

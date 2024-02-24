@@ -18,6 +18,8 @@ from intelwatcher.stopwatch import Stopwatch
 
 def get_koji_bbox():
     bboxes = []
+    areas_no = 0
+    loaded = []
 
     if config.bbox:
         bboxes = list(config.bbox.split(';'))
@@ -36,19 +38,24 @@ def get_koji_bbox():
             if "," in config.koji_include:
                 include_types = config.koji_include.splitf(",")
             else:
-                include_types = config.koji_include
+                include_types = [config.koji_include]
 
         for area in koji_data["data"]["features"]:
             if include_types:
                 if area.get("properties") and area["properties"].get("type") in include_types:
                     bbox = area.get("bbox")
                     if bbox:
+                        areas_no += 1
+                        loaded.append(area.get("properties", {}).get("name", "No name"))
                         bboxes.append(tuple(bbox))
             else:
                 bbox = area.get("bbox")
                 if bbox:
+                    areas_no += 1
+                    loaded.append(area.get("properties", {}).get("name", "No name"))
                     bboxes.append(tuple(bbox))
 
+    log.info(f"Koji loaded {areas_no} areas: {', '.join(loaded)}")
     return list(set(bboxes))
 
 
