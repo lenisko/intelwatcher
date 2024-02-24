@@ -5,7 +5,6 @@ import re
 import json
 import time
 from requests.utils import dict_from_cookiejar, cookiejar_from_dict
-from requests.auth import HTTPProxyAuth
 import math
 __AUTHOR__ = 'lc4t0.0@gmail.com and ccev'
 
