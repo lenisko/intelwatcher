@@ -94,8 +94,8 @@ class IntelMap:
         self.isCookieOk = False
         self.config = config
         self.proxy = {
-            "http": f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}",
-            "https": f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}",
+            "http": f"{self.config.proxy_type}://{self.config.proxy_username}:{self.config.proxy_password}@{self.config.proxy_host}:{self.config.proxy_port}",
+            "https": f"{self.config.proxy_type}://{self.config.proxy_username}:{self.config.proxy_password}@{self.config.proxy_host}:{self.config.proxy_port}",
         }
         self.login(cookie)
 
