@@ -92,12 +92,12 @@ class IntelMap:
         self.cookie_dict = None
         self.r = None
         self.isCookieOk = False
-        self.login(cookie)
         self.config = config
         self.proxy = {
             "http": f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}",
             "https": f"{self.config.proxy_type}://{self.config.proxy_host}:{self.config.proxy_port}",
         }
+        self.login(cookie)
 
     def login(self, cookie):
         try:
