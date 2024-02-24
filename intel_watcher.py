@@ -84,18 +84,20 @@ def needed_tiles(tiles):
 
 
 def scrape_all(n):
-    tiles = []
+    unique_tiles = set()
 
     if config.koji_project:
         bbox = get_koji_bbox()
         for cord in bbox:
-            tiles += get_tiles(cord)
+            unique_tiles.update(get_tiles(cord))
     else:
         bbox = list(config.bbox.split(';'))
         for cord in bbox:
             bbox_cord = list(map(float, cord.split(',')))
-            tiles += get_tiles(bbox_cord)
+            unique_tiles.update(get_tiles(bbox_cord))
 
+    # remove duplicated Tiles
+    tiles = list(unique_tiles)
     log.info(f"Total tiles: {len(tiles)}")
 
     portals = []
