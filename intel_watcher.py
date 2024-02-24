@@ -94,15 +94,17 @@ def needed_tiles(tiles):
 
 
 def scrape_all(n):
-    unique_tiles = set()
+    tiles = []
 
     bbox = get_bbox()
     for cord in bbox:
-        unique_tiles.update(get_tiles(cord))
+        tiles += get_tiles(cord)
 
     # remove duplicated Tiles
-    tiles = list(unique_tiles)
-    log.info(f"Total tiles: {len(tiles)}")
+    all_tiles_no = len(tiles)
+    tiles = list(set(tiles))
+    dedupe_tiles_no = len(tiles)
+    log.info(f"Total tiles: {dedupe_tiles_no}. Removed {all_tiles_no - dedupe_tiles_no} duplicated tiles.")
 
     portals = []
     while len(needed_tiles(tiles)) > 0:

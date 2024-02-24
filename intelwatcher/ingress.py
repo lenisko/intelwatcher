@@ -54,8 +54,16 @@ class Tile:
     def failed(self):
         return self.tries > 7
 
+    def __eq__(self, other):
+        if isinstance(other, Tile):
+            return self.name == other.name
+        return NotImplemented
 
-def get_tiles(bbox):
+    def __hash__(self):
+        return hash(self.name)
+
+
+def get_tiles(bbox) -> list:
     lower_lon, lower_lat, upper_lon, upper_lat = bbox
     zpe = get_tiles_per_edge(15)
     tiles = []
