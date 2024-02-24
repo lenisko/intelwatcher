@@ -103,10 +103,9 @@ class IntelMap:
         try:
             self.cookie_dict = {k.strip(): v for k, v in re.findall(r"(.*?)=(.*?);", cookie)}
             s = requests.Session()
-            if self.config.proxy_host:
+            # rework
+            if self.config.proxy_host and self.config.proxy_username and self.config.proxy_password:
                 s.proxies = self.proxy
-                if self.config.proxy_username or self.config.proxy_password:
-                    s.auth = HTTPProxyAuth(self.config.proxy_username, self.config.proxy_password)
             s.headers = self.headers
             s.cookies = cookiejar_from_dict(self.cookie_dict)
             test = s.get("https://intel.ingress.com/intel")
