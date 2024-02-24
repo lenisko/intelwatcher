@@ -16,14 +16,16 @@ from intelwatcher.get_cookie import mechanize_cookie, selenium_cookie
 from intelwatcher.stopwatch import Stopwatch
 
 
-def get_koji_bbox():
+def get_bbox():
     bboxes = []
     areas_no = 0
     loaded = []
 
     if config.bbox:
         bboxes = list(config.bbox.split(';'))
+        bbox_no = len(bboxes)
         bboxes = [tuple(map(float, bbox.split(','))) for bbox in bboxes]
+        log.info(f"BBox loaded {bbox_no} areas")
 
     if config.koji_project:
         bboxes = []  # clean if we care about koji
@@ -55,7 +57,8 @@ def get_koji_bbox():
                     loaded.append(area.get("properties", {}).get("name", "No name"))
                     bboxes.append(tuple(bbox))
 
-    log.info(f"Koji loaded {areas_no} areas: {', '.join(loaded)}")
+        log.info(f"Koji loaded {areas_no} areas: {', '.join(loaded)}")
+
     return list(set(bboxes))
 
 
@@ -93,15 +96,9 @@ def needed_tiles(tiles):
 def scrape_all(n):
     unique_tiles = set()
 
-    if config.koji_project:
-        bbox = get_koji_bbox()
-        for cord in bbox:
-            unique_tiles.update(get_tiles(cord))
-    else:
-        bbox = list(config.bbox.split(';'))
-        for cord in bbox:
-            bbox_cord = list(map(float, cord.split(',')))
-            unique_tiles.update(get_tiles(bbox_cord))
+    bbox = get_bbox()
+    for cord in bbox:
+        unique_tiles.update(get_tiles(cord))
 
     # remove duplicated Tiles
     tiles = list(unique_tiles)
