@@ -30,3 +30,14 @@ password =
 login_type = google/facebook
 driver = chrome/chromium/firefox
 headless_mode = True
+
+[proxy]
+host =
+port =
+username =
+password =
+
+[koji]
+project =
+bearer =
+include_types = quest
