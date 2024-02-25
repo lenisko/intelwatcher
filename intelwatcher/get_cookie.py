@@ -241,9 +241,13 @@ def selenium_cookie(config, log):
         final_cookie = _write_cookie(log, {c['name']: c['value'] for c in driver.get_cookies()})
     elif config.ingress_login_type == 'facebook':
         driver.get('http://intel.ingress.com')
-        driver.find_element("xpath", '//div[@id="dashboard_container"]//a[@class="button_link" and contains(text(), "Facebook")]').click()
+        driver.find_element("xpath", '//div[@class="button unselectable"]//a').click()
         driver.implicitly_wait(10)
-        driver.find_element("xpath", '//*[@data-cookiebanner="accept_button"]').click()
+        driver.find_element("xpath", '//button[@id="signin-provider-btn-facebook"]').click()
+        driver.implicitly_wait(10)
+        whandles = driver.window_handles
+        driver.switch_to.window(whandles[1])
+        driver.find_element("xpath", '//button[@data-cookiebanner="accept_button"]').click()
 
         log.info('Enter username...')
         try:
@@ -263,6 +267,16 @@ def selenium_cookie(config, log):
             driver.implicitly_wait(10)
         except NoSuchElementException:
             _save_screenshot_on_failure('fb_login_login.png')
+
+        time.sleep(5)
+
+        log.info('Confirm oauth login when needed...')
+        try:
+            driver.find_element(By.XPATH, "//span[text()='Accept']").click()
+            driver.implicitly_wait(10)
+            time.sleep(5)
+        except NoSuchElementException:
+            pass
 
         time.sleep(5)
 

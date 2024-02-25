@@ -130,7 +130,7 @@ class IntelMap:
     def getCookieStatus(self):
         return self.isCookieOk
 
-    def scrape_tiles(self, tiles, portals, log, progress, task):
+    def scrape_tiles(self, tiles, portals, log):
         if not tiles:
             return
         try:
@@ -160,12 +160,12 @@ class IntelMap:
                         return
 
             if not result or result.text == "{}" or not result.text:
-                self.scrape_tiles(tiles, portals, log, progress, task)
+                self.scrape_tiles(tiles, portals, log)
                 return
             try:
                 result = result.json()["result"]["map"]
             except:
-                self.scrape_tiles(tiles, portals, log, progress, task)
+                self.scrape_tiles(tiles, portals, log)
                 return
             
             errors = []
@@ -186,7 +186,6 @@ class IntelMap:
                     continue
 
                 tile.success = True
-                progress.update(task, advance=1)
                 for entry in entities:
                     if entry[2][0] == "p":
                         p_id = entry[0]
@@ -196,10 +195,10 @@ class IntelMap:
                         p_img = maybe_byte(entry[2][7])
                         portals.append((p_id, p_name, p_img, p_lat, p_lon, now, now))
 
-            self.scrape_tiles(errors, portals, log, progress, task)
+            self.scrape_tiles(errors, portals, log)
         except Exception as e:
             log.exception(e)
-            self.scrape_tiles(tiles, portals, log, progress, task)
+            self.scrape_tiles(tiles, portals, log)
 
     def get_portal_details(self, guid):
         data = self.data_base.copy()

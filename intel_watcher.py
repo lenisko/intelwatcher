@@ -7,7 +7,6 @@ import coloredlogs
 
 from time import sleep
 from concurrent.futures.thread import ThreadPoolExecutor
-from rich.progress import Progress
 
 from intelwatcher.ingress import IntelMap, get_tiles, maybe_byte
 from intelwatcher.config import Config
@@ -111,11 +110,9 @@ def scrape_all(n):
         part_tiles = needed_tiles(tiles)[:config.maxtiles]
         scrapetime = Stopwatch()
 
-        with Progress() as progress:
-            task = progress.add_task("Scraping Portals", total=len(part_tiles))
-            with ThreadPoolExecutor(max_workers=config.workers) as executor:
-                for part_tile in chunks(part_tiles, n):
-                    executor.submit(scraper.scrape_tiles, part_tile, portals, log, progress, task)
+        with ThreadPoolExecutor(max_workers=config.workers) as executor:
+            for part_tile in chunks(part_tiles, n):
+                executor.submit(scraper.scrape_tiles, part_tile, portals, log)
 
         log.info(f"Done in {scrapetime.pause()}s - Writing portals to DB")
 
@@ -147,13 +144,9 @@ def scrape_all(n):
                 log.info((f"Sleeping {config.areasleep} minutes before getting the next "
                           f"{len(next_tiles[:config.maxtiles])} tiles"))
 
-                with Progress() as progress:
-                    total_sleep = 60 * config.areasleep
-                    task = progress.add_task("Sleeping", total=total_sleep)
-                    for i in range(total_sleep):
-                        progress.update(task, advance=1)
-                        sleep(1)
-                    log.info("")
+                total_sleep = 60 * config.areasleep
+                sleep(total_sleep)
+                log.info("")
 
 
 def send_cookie_webhook(text):
