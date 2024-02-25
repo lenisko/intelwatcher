@@ -96,7 +96,7 @@ def needed_tiles(tiles):
 
 def tiles_stats(tiles):
     def formatted_fail_metrics(d):
-        return ' | '.join([f"{key} = {value: <8}" for key, value in d])
+        return ' | '.join([f"{key} = {value: <8}" for key, value in d.items()])
 
     total_tiles = len(tiles)
     success_tiles = len([t for t in tiles if t.success])
