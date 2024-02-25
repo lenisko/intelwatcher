@@ -184,7 +184,7 @@ def scrape_all(n):
                           f"{len(next_tiles[:config.maxtiles])} tiles"))
 
                 total_sleep = 60 * config.areasleep
-                all_times += time.time() - iteration_time
+                all_times.append(time.time() - iteration_time)
                 sleep(total_sleep)
                 iteration += 1
                 if iteration % 10 == 0:
