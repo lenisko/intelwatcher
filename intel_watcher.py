@@ -15,6 +15,8 @@ from intelwatcher.get_cookie import mechanize_cookie, selenium_cookie
 from intelwatcher.stopwatch import Stopwatch
 
 
+MAX_FAILS = 8
+
 def get_bbox():
     bboxes = []
     areas_no = 0
@@ -89,12 +91,24 @@ def chunks(lst, n):
 
 
 def needed_tiles(tiles):
-    return [t for t in tiles if not t.success and t.fails < 3]
+    return [t for t in tiles if not t.success and t.fails < MAX_FAILS]
+
+
+def tiles_stats(tiles):
+    total_tiles = len(tiles)
+    success_tiles = len([t for t in tiles if t.success])
+    failed = {}
+    recovered = {}
+    for fails_number in range(MAX_FAILS):
+        failed[fails_number] = len([t for t in tiles if not t.success and t.fails == fails_number])
+    for fails_number in range(MAX_FAILS):
+        recovered[fails_number] = len([t for t in tiles if t.success and t.fails == fails_number])
+    return f"Total: {total_tiles} Success: {success_tiles}\nFailed: {failed}\nRecovered: {recovered}"
 
 
 def scrape_all(n):
     tiles = []
-
+    iteration = 0
     bbox = get_bbox()
     for cord in bbox:
         tiles += get_tiles(cord)
@@ -146,7 +160,10 @@ def scrape_all(n):
 
                 total_sleep = 60 * config.areasleep
                 sleep(total_sleep)
-                log.info("")
+                iteration += 1
+                if iteration % 10 == 0:
+                    iteration = 0
+                    log.info(tiles_stats(tiles))
 
 
 def send_cookie_webhook(text):
