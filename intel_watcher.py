@@ -94,20 +94,15 @@ def needed_tiles(tiles):
     return [t for t in tiles if not t.success and t.fails < MAX_FAILS]
 
 
-def scrape_eta(iteration, start_time, all_times, all_tiles_no, max_tiles):
+def scrape_eta(iteration, all_times, all_tiles_no, max_tiles):
     last_100_times = all_times[-100:]
     current_time = time.time()
     average_iteration_time = sum(last_100_times) / len(last_100_times)
     remaining_iterations = all_tiles_no - (iteration * max_tiles)
-    total_time_elapsed = current_time - start_time
     eta_seconds = remaining_iterations * average_iteration_time
     eta = current_time + eta_seconds
-    total_time_elapsed_formatted = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(total_time_elapsed))
     eta_formatted = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(eta))
-    return (
-        f"Iteration: {iteration * max_tiles}/{all_tiles_no} ETA: {eta_seconds}s "
-        f"Elapsed: {total_time_elapsed_formatted} Target: {eta_formatted}"
-    )
+    return f"Iteration: {iteration * max_tiles}/{all_tiles_no} ETA: {eta_seconds}s Target: {eta_formatted}"
 
 
 def tiles_stats(tiles):
@@ -188,7 +183,7 @@ def scrape_all(n):
                 sleep(total_sleep)
                 iteration += 1
                 if iteration % 10 == 0:
-                    log.info(scrape_eta(iteration, start_time, all_times, all_tiles_no, config.maxtiles))
+                    log.info(scrape_eta(iteration, all_times, all_tiles_no, config.maxtiles))
                     log.info(tiles_stats(tiles))
 
 
