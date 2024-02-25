@@ -292,6 +292,6 @@ if __name__ == "__main__":
         log.error("Please use a -t count below 25")
         sys.exit(1)
 
-    time = Stopwatch()
+    gtime = Stopwatch()
     scrape_all(int(args.tiles))
-    log.success(f"Total runtime: {time.pause()} seconds")
+    log.success(f"Total runtime: {gtime.pause()} seconds")
