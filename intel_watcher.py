@@ -94,6 +94,22 @@ def needed_tiles(tiles):
     return [t for t in tiles if not t.success and t.fails < MAX_FAILS]
 
 
+def scrape_eta(iteration, start_time, all_times, all_tiles_no):
+    last_100_times = all_times[-100:]
+    current_time = time.time()
+    average_iteration_time = sum(last_100_times) / len(last_100_times)
+    remaining_iterations = all_tiles_no - iteration
+    total_time_elapsed = current_time - start_time
+    eta_seconds = remaining_iterations * average_iteration_time
+    eta = current_time + eta_seconds
+    total_time_elapsed_formatted = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(total_time_elapsed))
+    eta_formatted = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(eta))
+    return (
+        f"Iteration: {iteration}/{all_tiles_no} ETA: {eta_seconds}s "
+        f"Elapsed: {total_time_elapsed_formatted} Target: {eta_formatted}"
+    )
+
+
 def tiles_stats(tiles):
     def formatted_fail_metrics(d):
         return ' | '.join([f"{key} = {value: <8}" for key, value in d.items()])
@@ -119,16 +135,19 @@ def scrape_all(n):
     for cord in bbox:
         tiles += get_tiles(cord)
 
-    # remove duplicated Tiles
     all_tiles_no = len(tiles)
     tiles = list(set(tiles))
     dedupe_tiles_no = len(tiles)
+
+    start_time = time.time()
+    all_times = []
     log.info(f"Total tiles: {dedupe_tiles_no}. Removed {all_tiles_no - dedupe_tiles_no} duplicated tiles.")
 
     portals = []
     while len(needed_tiles(tiles)) > 0:
         part_tiles = needed_tiles(tiles)[:config.maxtiles]
         scrapetime = Stopwatch()
+        iteration_time = time.time()
 
         with ThreadPoolExecutor(max_workers=config.workers) as executor:
             for part_tile in chunks(part_tiles, n):
@@ -165,10 +184,11 @@ def scrape_all(n):
                           f"{len(next_tiles[:config.maxtiles])} tiles"))
 
                 total_sleep = 60 * config.areasleep
+                all_times += time.time() - iteration_time
                 sleep(total_sleep)
                 iteration += 1
                 if iteration % 10 == 0:
-                    iteration = 0
+                    log.info(scrape_eta(iteration, start_time, all_times, all_tiles_no))
                     log.info(tiles_stats(tiles))
 
 
