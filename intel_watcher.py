@@ -95,15 +95,21 @@ def needed_tiles(tiles):
 
 
 def tiles_stats(tiles):
+    def formatted_fail_metrics(d):
+        return ' | '.join([f"{key} = {value: <8}" for key, value in d])
+
     total_tiles = len(tiles)
     success_tiles = len([t for t in tiles if t.success])
     failed = {}
     recovered = {}
-    for fails_number in range(MAX_FAILS):
+    for fails_number in range(1, MAX_FAILS):
         failed[fails_number] = len([t for t in tiles if not t.success and t.fails == fails_number])
-    for fails_number in range(MAX_FAILS):
+    for fails_number in range(1, MAX_FAILS):
         recovered[fails_number] = len([t for t in tiles if t.success and t.fails == fails_number])
-    return f"Total: {total_tiles} Success: {success_tiles}\nFailed: {failed}\nRecovered: {recovered}"
+    return (
+        f"Total: {total_tiles} Success: {success_tiles}\nFailed: {formatted_fail_metrics(failed)}"
+        f"\nRecove: {formatted_fail_metrics(recovered)}"
+    )
 
 
 def scrape_all(n):
